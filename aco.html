@@ -3,101 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kalkulator Keuntungan</title>
+    <title>Aco Store</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
-            text-align: center;
+            padding: 20px;
+            background-color: #f4f4f4;
         }
         .container {
-            max-width: 100%;
-            overflow-x: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px gray;
+            max-width: 500px;
+            margin: auto;
         }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
+        .item-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
-        table, th, td {
-            border: 1px solid black;
-        }
-        th, td {
+        .item {
+            background: #fff;
             padding: 10px;
-            text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 5px;
         }
-        .profit {
-            font-weight: bold;
-            margin-top: 20px;
+        label, input {
+            display: block;
+            width: 100%;
+            margin-bottom: 5px;
+            padding: 8px;
+            font-size: 16px;
         }
-        @media (max-width: 600px) {
-            table {
-                font-size: 14px;
-            }
-            th, td {
-                padding: 5px;
-            }
-            input {
-                width: 80px;
-            }
+        button {
+            background: blue;
+            color: white;
+            padding: 12px;
+            border: none;
+            cursor: pointer;
+            margin-top: 10px;
+            font-size: 16px;
+            width: 100%;
+            border-radius: 5px;
         }
     </style>
 </head>
 <body>
-    <h2>Kalkulator Keuntungan</h2>
     <div class="container">
-        <table id="dataTable">
-            <thead>
-                <tr>
-                    <th>Nama Item</th>
-                    <th>Harga Modal</th>
-                    <th>Harga Jual</th>
-                    <th>Jumlah</th>
-                    <th>Keuntungan</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td><input type="text" class="item"></td>
-                    <td><input type="number" class="cost" oninput="calculateProfit()"></td>
-                    <td><input type="number" class="sell" oninput="calculateProfit()"></td>
-                    <td><input type="number" class="quantity" oninput="calculateProfit()"></td>
-                    <td class="profitCell">0</td>
-                </tr>
-            </tbody>
-        </table>
+        <h2><center>Aco Ardi Wiranata Store</center></h2>
+        <div id="items" class="item-container">
+            <div class="item">
+                <label>Nama Barang:</label>
+                <input type="text" class="namaBarang">
+                <label>Harga Modal:</label>
+                <input type="number" class="hargaModal">
+                <label>Harga Jual:</label>
+                <input type="number" class="hargaJual">
+                <label>Jumlah Terjual:</label>
+                <input type="number" class="jumlahTerjual">
+            </div>
+        </div>
+        <button onclick="tambahItem()">Tambah Item</button>
+        <button onclick="hitungKeuntungan()">Hitung</button>
+        <h3 id="hasil"></h3>
     </div>
-    <br>
-    <button onclick="addRow()">Tambah Item</button>
-    <h3 class="profit">Total Keuntungan: <span id="totalProfit">0</span></h3>
-    <h3 class="profit" id="status">Status: -</h3>
+
     <script>
-        function addRow() {
-            let table = document.getElementById("dataTable").getElementsByTagName('tbody')[0];
-            let newRow = table.insertRow();
-            newRow.innerHTML = `
-                <td><input type="text" class="item"></td>
-                <td><input type="number" class="cost" oninput="calculateProfit()"></td>
-                <td><input type="number" class="sell" oninput="calculateProfit()"></td>
-                <td><input type="number" class="quantity" oninput="calculateProfit()"></td>
-                <td class="profitCell">0</td>
+        function tambahItem() {
+            let container = document.getElementById("items");
+            let itemDiv = document.createElement("div");
+            itemDiv.classList.add("item");
+            itemDiv.innerHTML = `
+                <label>Nama Barang:</label>
+                <input type="text" class="namaBarang">
+                <label>Harga Modal:</label>
+                <input type="number" class="hargaModal">
+                <label>Harga Jual:</label>
+                <input type="number" class="hargaJual">
+                <label>Jumlah Terjual:</label>
+                <input type="number" class="jumlahTerjual">
             `;
+            container.appendChild(itemDiv);
         }
-        function calculateProfit() {
-            let rows = document.querySelectorAll("#dataTable tbody tr");
-            let totalProfit = 0;
-            rows.forEach(row => {
-                let cost = row.querySelector(".cost").value || 0;
-                let sell = row.querySelector(".sell").value || 0;
-                let quantity = row.querySelector(".quantity").value || 0;
-                let profit = (sell - cost) * quantity;
-                row.querySelector(".profitCell").textContent = profit;
-                totalProfit += profit;
+
+        function hitungKeuntungan() {
+            let items = document.querySelectorAll(".item");
+            let totalBayar = 0;
+            let totalLaba = 0;
+            let hasilText = "";
+            
+            items.forEach(item => {
+                let namaBarang = item.querySelector(".namaBarang").value;
+                let hargaModal = parseFloat(item.querySelector(".hargaModal").value);
+                let hargaJual = parseFloat(item.querySelector(".hargaJual").value);
+                let jumlahTerjual = parseInt(item.querySelector(".jumlahTerjual").value);
+                
+                let subTotalBayar = hargaJual * jumlahTerjual;
+                let subTotalLaba = (hargaJual - hargaModal) * jumlahTerjual;
+                let statusLaba = subTotalLaba >= 0 ? "Untung" : "Rugi";
+                
+                if (hargaJual === 35000) {
+                    let paketDiskon = Math.floor(jumlahTerjual / 3);
+                    let sisaItem = jumlahTerjual % 3;
+                    subTotalBayar = (paketDiskon * 100000) + (sisaItem * 35000);
+                    subTotalLaba = ((paketDiskon * 100000) - (paketDiskon * 3 * hargaModal)) + ((sisaItem * hargaJual) - (sisaItem * hargaModal));
+                }
+                
+                totalBayar += subTotalBayar;
+                totalLaba += subTotalLaba;
+                
+                hasilText += `Barang: ${namaBarang} <br>Total Harga: Rp ${subTotalBayar.toLocaleString()} <br>Laba: Rp ${subTotalLaba.toLocaleString()} (${statusLaba})<br><br>`;
             });
-            document.getElementById("totalProfit").textContent = totalProfit;
-            let status = document.getElementById("status");
-            status.textContent = totalProfit >= 0 ? "Status: Untung" : "Status: Rugi";
-            status.style.color = totalProfit >= 0 ? "green" : "red";
+            
+            let statusTotalLaba = totalLaba >= 0 ? "Untung" : "Rugi";
+            hasilText += `<strong>Total Keseluruhan:</strong> <br>Total Harga: Rp ${totalBayar.toLocaleString()} <br>Total Laba: Rp ${totalLaba.toLocaleString()} (${statusTotalLaba})`;
+            document.getElementById("hasil").innerHTML = hasilText;
         }
     </script>
 </body>
