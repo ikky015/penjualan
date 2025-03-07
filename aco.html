@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Keuntungan</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            text-align: center;
+        }
+        .container {
+            max-width: 100%;
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: center;
+        }
+        .profit {
+            font-weight: bold;
+            margin-top: 20px;
+        }
+        @media (max-width: 600px) {
+            table {
+                font-size: 14px;
+            }
+            th, td {
+                padding: 5px;
+            }
+            input {
+                width: 80px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h2>Kalkulator Keuntungan</h2>
+    <div class="container">
+        <table id="dataTable">
+            <thead>
+                <tr>
+                    <th>Nama Item</th>
+                    <th>Harga Modal</th>
+                    <th>Harga Jual</th>
+                    <th>Jumlah</th>
+                    <th>Keuntungan</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><input type="text" class="item"></td>
+                    <td><input type="number" class="cost" oninput="calculateProfit()"></td>
+                    <td><input type="number" class="sell" oninput="calculateProfit()"></td>
+                    <td><input type="number" class="quantity" oninput="calculateProfit()"></td>
+                    <td class="profitCell">0</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <br>
+    <button onclick="addRow()">Tambah Item</button>
+    <h3 class="profit">Total Keuntungan: <span id="totalProfit">0</span></h3>
+    <h3 class="profit" id="status">Status: -</h3>
+    <script>
+        function addRow() {
+            let table = document.getElementById("dataTable").getElementsByTagName('tbody')[0];
+            let newRow = table.insertRow();
+            newRow.innerHTML = `
+                <td><input type="text" class="item"></td>
+                <td><input type="number" class="cost" oninput="calculateProfit()"></td>
+                <td><input type="number" class="sell" oninput="calculateProfit()"></td>
+                <td><input type="number" class="quantity" oninput="calculateProfit()"></td>
+                <td class="profitCell">0</td>
+            `;
+        }
+        function calculateProfit() {
+            let rows = document.querySelectorAll("#dataTable tbody tr");
+            let totalProfit = 0;
+            rows.forEach(row => {
+                let cost = row.querySelector(".cost").value || 0;
+                let sell = row.querySelector(".sell").value || 0;
+                let quantity = row.querySelector(".quantity").value || 0;
+                let profit = (sell - cost) * quantity;
+                row.querySelector(".profitCell").textContent = profit;
+                totalProfit += profit;
+            });
+            document.getElementById("totalProfit").textContent = totalProfit;
+            let status = document.getElementById("status");
+            status.textContent = totalProfit >= 0 ? "Status: Untung" : "Status: Rugi";
+            status.style.color = totalProfit >= 0 ? "green" : "red";
+        }
+    </script>
+</body>
+</html>
